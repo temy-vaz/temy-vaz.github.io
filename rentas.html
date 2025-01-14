@@ -13,7 +13,7 @@
       align-items: center;
       height: 600px;
     }
-    canvas {
+    img {
       max-width: 100%;
       height: auto;
     }
@@ -59,57 +59,59 @@
           </div>
         </div>
       </header>  
-      <section class="container my-5">
-        <div id="pdfCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner" id="pdf-container">
-            <!-- Las páginas del PDF se cargarán aquí -->
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#pdfCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#pdfCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-          </button>
-        </div>
-      </section>
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-      <script>
-        const pdfUrl = 'HAMILTON-C2_tech-specs_es_689280.08 (1).pdf'; // Cambiar a la ruta de tu PDF
-    
-        const pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
-    
-        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-          const pdfContainer = document.getElementById('pdf-container');
-          
-          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            pdf.getPage(pageNum).then(page => {
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              const viewport = page.getViewport({ scale: 1.5 });
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
-              
-              page.render({ canvasContext: context, viewport: viewport });
-              
-              const carouselItem = document.createElement('div');
-              carouselItem.className = `carousel-item ${pageNum === 1 ? 'active' : ''}`;
-              
-              const pageDiv = document.createElement('div');
-              pageDiv.className = 'pdf-page';
-              pageDiv.appendChild(canvas);
-              
-              carouselItem.appendChild(pageDiv);
-              pdfContainer.appendChild(carouselItem);
-            });
-          }
-        });
-      </script>
+     <section class="container my-5">
+    <div id="pdfCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner" id="pdf-container">
+        <!-- Las páginas del PDF como imágenes se cargarán aquí -->
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#pdfCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#pdfCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </div>
+  </section>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const pdfUrl = '/ruta/al/archivo.pdf'; // Cambiar a la ruta de tu PDF
+
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
+
+    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+      const pdfContainer = document.getElementById('pdf-container');
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        pdf.getPage(pageNum).then(page => {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          const viewport = page.getViewport({ scale: 2 });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL();
+
+            const carouselItem = document.createElement('div');
+            carouselItem.className = `carousel-item ${pageNum === 1 ? 'active' : ''}`;
+
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'pdf-page';
+            pageDiv.appendChild(img);
+
+            carouselItem.appendChild(pageDiv);
+            pdfContainer.appendChild(carouselItem);
+          });
+        });
+      }
+    });
+  </script>
 
       <script src="main.js"></script>
       <script src="slider.js"></script>
