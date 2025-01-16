@@ -60,12 +60,10 @@
     color: var(--extra-light);
   }
 
-    img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    }
+  img {
+    display: flex;
+    width: 100%;
+  }
   
   a {
     text-decoration: none;
